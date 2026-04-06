@@ -5,7 +5,16 @@
 # See README.md for the expected directory layout.
 # ---------------------------------------------------------------------------
 artifacts/**
-!artifacts/**/.gitkeep
+!artifacts/input/
+!artifacts/input/.gitkeep
+!artifacts/output/
+!artifacts/output/.gitkeep
+!artifacts/lidar_tiles/
+!artifacts/lidar_tiles/.gitkeep
+!artifacts/validation/
+!artifacts/validation/.gitkeep
+!artifacts/validation/report/
+!artifacts/validation/report/.gitkeep
 
 # Python bytecode
 __pycache__/

@@ -1,0 +1,22 @@
+# ---------------------------------------------------------------------------
+# artifacts/ — all runtime data (inputs, outputs, LiDAR, validation).
+# This directory is intentionally excluded from version control.
+# Users are responsible for managing their own network files and outputs.
+# See README.md for the expected directory layout.
+# ---------------------------------------------------------------------------
+artifacts/**
+!artifacts/**/.gitkeep
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# DEM fallback marker (written by 01_download_lidar.py)
+.use_dem_fallback
+
+# LiDAR metadata cached by step 1
+lidar_urls.json
+lidar_projects.json
+
+# Temporary/scratch scripts (prefix with _)
+_*.py

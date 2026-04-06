@@ -24,7 +24,7 @@ from config import (NET_FILE, POINTS_CSV, SMOOTHED_CSV, OUTPUT_NET, OUTPUT_XODR,
                     OPP_RECON_MIN_GAP, OPP_RECON_MIN_LEN, OPP_RECON_MAX_RATIO,
                     OPP_CSV_MIN_GAP, OPP_CSV_MIN_LEN, OPP_CSV_MAX_RATIO)
 
-WORK_DIR = NET_FILE.parent   # cwd for netconvert subprocess calls
+WORK_DIR = OUTPUT_NET.parent  # cwd for netconvert subprocess calls (artifacts/output/)
 
 
 def split_network(net_file: Path, prefix: str):

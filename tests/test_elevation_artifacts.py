@@ -28,19 +28,31 @@ import sys
 import time
 from pathlib import Path
 
-# Add parent directory (elevation_work/) to path for config import
+# Add parent directory to path for config import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import numpy as np
+from config import OUTPUT_NET, OUTPUT_XODR, VALIDATION_DIR, REPORT_DIR
 
-WORK = Path(__file__).parent.parent   # scripts/elevation_work/
-RESULTS = Path(__file__).parent / "results"
+NET_FILE  = OUTPUT_NET
+XODR_FILE = OUTPUT_XODR
+RESULTS   = REPORT_DIR
 RESULTS.mkdir(parents=True, exist_ok=True)
 
-NET_FILE  = WORK / "uga_elevation.net.xml"
-XODR_FILE = WORK / "uga_elevation.xodr"
 SUMO_EXE  = "sumo"
-RANDOM_TRIPS = Path("C:/sumo_1_18_0/tools/randomTrips.py")
+
+def _find_random_trips() -> Path | None:
+    """Resolve randomTrips.py from SUMO_HOME env var or common install locations."""
+    sumo_home = os.environ.get("SUMO_HOME", "")
+    if sumo_home:
+        p = Path(sumo_home) / "tools" / "randomTrips.py"
+        if p.exists():
+            return p
+    for candidate in Path("C:/").glob("sumo*/tools/randomTrips.py"):
+        return candidate
+    return None
+
+RANDOM_TRIPS = _find_random_trips()
 PYTHON_EXE   = sys.executable
 
 # ── Thresholds ────────────────────────────────────────────────────────────────
@@ -683,10 +695,13 @@ def test_T6_junction_mismatch(net_root):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def test_T7_sumo_simulation():
-    trips_file = RESULTS / "sim_trips.trips.xml"
-    routes_file= RESULTS / "sim_routes.rou.xml"
-    cfg_file   = RESULTS / "sim.sumocfg"
-    fcd_file   = RESULTS / "sim_fcd.xml"
+    if RANDOM_TRIPS is None:
+        return False, "T7 SKIP: randomTrips.py not found — set SUMO_HOME env var"
+    VALIDATION_DIR.mkdir(parents=True, exist_ok=True)
+    trips_file = VALIDATION_DIR / "sim_trips.trips.xml"
+    routes_file= VALIDATION_DIR / "sim_routes.rou.xml"
+    cfg_file   = VALIDATION_DIR / "sim.sumocfg"
+    fcd_file   = VALIDATION_DIR / "sim_fcd.xml"
 
     # 1. Generate random trips
     trip_cmd = [

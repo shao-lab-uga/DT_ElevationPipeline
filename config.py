@@ -11,16 +11,16 @@ Directory layout
   ├── .gitignore
   ├── README.md
   └── artifacts/               ← runtime data, fully gitignored
-      ├── input/               ← user drops .net.xml here (or browses to it)
-      ├── output/              ← *_elevation.net.xml, .xodr, CSVs
-      ├── lidar_tiles/
-      └── validation/          ← FCD, sumocfg, trips, report/
+      ├── input/               ← drop your .net.xml here
+      ├── output/              ← output net.xml, xodr, CSVs
+      ├── lidar_tiles/         ← downloaded .laz/.las files
+      └── validation/          ← SUMO sim files + report/
 
 Quick start
 -----------
   python run_pipeline.py
-  → File browser opens at artifacts/input/ (create it and put your .net.xml there).
-  → All outputs land in artifacts/output/ and artifacts/validation/.
+  → Drop your .net.xml into artifacts/input/ and pass it via --net or the file browser.
+  → Network outputs land in artifacts/output/, validation in artifacts/validation/.
 """
 
 import os
@@ -62,12 +62,13 @@ OUTPUT_NET_FILENAME = _output_stem + ".net.xml"
 OUTPUT_NET:   Path = ARTIFACTS_DIR / "output" / OUTPUT_NET_FILENAME
 OUTPUT_XODR:  Path = ARTIFACTS_DIR / "output" / (_output_stem + ".xodr")
 
+WORK_DIR:     Path = ARTIFACTS_DIR / "input"
 LIDAR_DIR:    Path = ARTIFACTS_DIR / "lidar_tiles"
 POINTS_CSV:   Path = ARTIFACTS_DIR / "output" / "network_points_with_elevation.csv"
 SMOOTHED_CSV: Path = ARTIFACTS_DIR / "output" / "network_points_smoothed.csv"
 
 VALIDATION_DIR: Path = ARTIFACTS_DIR / "validation"
-REPORT_DIR:     Path = VALIDATION_DIR / "report"
+REPORT_DIR:     Path = ARTIFACTS_DIR / "validation" / "report"
 
 # ---------------------------------------------------------------------------
 # Elevation constraints

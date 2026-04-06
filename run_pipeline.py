@@ -355,6 +355,14 @@ def main():
         "--skip-xodr-check", action="store_true",
         help="Skip step 6 (xodr consistency check). Skipped automatically when no .xodr exists.",
     )
+    parser.add_argument(
+        "--run-tests", action="store_true",
+        help="Run the artifact test suite (T1-T7) after the pipeline completes.",
+    )
+    parser.add_argument(
+        "--no-sim", action="store_true",
+        help="Skip the SUMO simulation test (T7) when --run-tests is set.",
+    )
     args = parser.parse_args()
 
     # --- Select network file (browser prompt or --net) ---
@@ -412,6 +420,18 @@ def main():
             xodr_out = cfg.ROAD_MARKINGS_OUTPUT_XODR or cfg.OUTPUT_XODR
             print(f"  Output OpenDRIVE: {xodr_out}")
     print("=" * 60)
+
+    # --- Optional test suite ---
+    if args.run_tests:
+        print("\nRunning artifact test suite...")
+        test_script = Path(__file__).parent / "tests" / "test_elevation_artifacts.py"
+        test_cmd = [sys.executable, str(test_script)]
+        if args.no_sim:
+            test_cmd.append("--no-sim")
+        result = subprocess.run(test_cmd)
+        if result.returncode != 0:
+            print("  Tests FAILED — see report above.")
+            sys.exit(result.returncode)
 
 
 if __name__ == "__main__":
